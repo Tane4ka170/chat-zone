@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.__filename;
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3500;
 const ADMIN = "Admin";
@@ -17,6 +17,7 @@ const expressServer = app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
 
+// state
 const UsersState = {
   users: [],
   setUsers: function (newUsersArray) {
@@ -37,7 +38,7 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
   // Upon connection - only to user
-  socket.emit("message", buildMsg(ADMIN, "Welcome to ChatZone"));
+  socket.emit("message", buildMsg(ADMIN, "Welcome to Chat App!"));
 
   socket.on("enterRoom", ({ name, room }) => {
     // leave previous room
@@ -137,6 +138,7 @@ function buildMsg(name, text) {
   };
 }
 
+// User functions
 function activateUser(id, name, room) {
   const user = { id, name, room };
   UsersState.setUsers([
@@ -155,7 +157,7 @@ function getUser(id) {
 }
 
 function getUsersInRoom(room) {
-  return UsersState.users.find((user) => user.room === room);
+  return UsersState.users.filter((user) => user.room === room);
 }
 
 function getAllActiveRooms() {
